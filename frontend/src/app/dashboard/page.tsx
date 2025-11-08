@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { getDashboard } from '@/lib/api';
 import { DashboardData } from '@/lib/types';
-import { Calendar, CheckCircle, Clock, TrendingUp, BookOpen, Target, Brain, Zap } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, TrendingUp, BookOpen, Target, Brain, Zap, Users } from 'lucide-react';
 
 export default function DashboardPage() {
   const searchParams = useSearchParams();
@@ -62,6 +62,13 @@ export default function DashboardPage() {
           >
             Create Study Plan
           </button>
+          <button
+  onClick={() => router.push('/peer')}
+  className="px-6 py-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition flex items-center shadow-lg"
+>
+  <Users className="w-5 h-5 mr-2" />
+  Peer Learning
+</button>
         </div>
       </div>
     );
