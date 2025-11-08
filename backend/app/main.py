@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from app.config.database import engine, Base
 from app.routes import upload, study_plan, lessons, test_gemini, practice  # Add practice
 from app.models import models
+from app.routes import upload, study_plan, lessons, test_gemini, practice, srs
 import traceback
 
 # Create database tables
@@ -51,7 +52,8 @@ app.include_router(upload.router)
 app.include_router(study_plan.router)
 app.include_router(lessons.router)
 app.include_router(test_gemini.router)
-app.include_router(practice.router)  # Add this line
+app.include_router(practice.router)
+app.include_router(srs.router)  # Add this line
 
 @app.get("/")
 async def root():
