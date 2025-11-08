@@ -5,6 +5,9 @@ from app.config.database import engine, Base
 from app.routes import upload, study_plan, lessons, test_gemini, practice  # Add practice
 from app.models import models
 from app.routes import upload, study_plan, lessons, test_gemini, practice, srs
+from app.routes import upload, study_plan, lessons, test_gemini, practice, srs, exam_day
+
+# ... existing code ...
 import traceback
 
 # Create database tables
@@ -53,7 +56,8 @@ app.include_router(study_plan.router)
 app.include_router(lessons.router)
 app.include_router(test_gemini.router)
 app.include_router(practice.router)
-app.include_router(srs.router)  # Add this line
+app.include_router(srs.router)
+app.include_router(exam_day.router)
 
 @app.get("/")
 async def root():
