@@ -27,11 +27,13 @@ export interface DashboardData {
   total_sessions: number;
   completed_sessions: number;
   today_tasks: Array<{
+    topic_id: number;  // Add this
     topic: string;
     duration: number;
     completed: boolean;
   }>;
 }
+
 
 // NEW: Practice Types
 export interface MCQOption {

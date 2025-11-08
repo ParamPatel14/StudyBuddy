@@ -141,18 +141,6 @@ async def generate_plan(
             detail=f"Failed to generate plan: {str(e)}"
         )
 
-@router.get("/{plan_id}", response_model=StudyPlanResponse)
-async def get_study_plan(
-    plan_id: int,
-    db: Session = Depends(get_db)
-):
-    """Get study plan details"""
-    study_plan = db.query(StudyPlan).filter(StudyPlan.id == plan_id).first()
-    if not study_plan:
-        raise HTTPException(status_code=404, detail="Study plan not found")
-    
-    return study_plan
-
 @router.get("/{plan_id}/dashboard")
 async def get_dashboard_data(
     plan_id: int,
@@ -179,20 +167,21 @@ async def get_dashboard_data(
         
         progress = (completed_sessions / total_sessions * 100) if total_sessions > 0 else 0
         
-        # Get today's sessions
+        # Get today's sessions WITH topic_id
         today_sessions = db.query(StudySession).join(Topic).filter(
             Topic.plan_id == plan_id,
             StudySession.scheduled_date == date.today()
         ).all()
         
         return {
-            "exam_date": study_plan.exam_date,
+            "exam_date": study_plan.exam_date.isoformat(),
             "days_remaining": (study_plan.exam_date - date.today()).days,
             "progress": round(progress, 2),
             "total_sessions": total_sessions,
             "completed_sessions": completed_sessions,
             "today_tasks": [
                 {
+                    "topic_id": session.topic.id,  # Add topic_id
                     "topic": session.topic.name,
                     "duration": session.duration,
                     "completed": session.completed
