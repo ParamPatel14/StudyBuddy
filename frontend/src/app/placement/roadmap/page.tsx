@@ -7,6 +7,7 @@ import {
   Calendar, Code, CheckCircle, Clock, Target, 
   TrendingUp, Users, Layers, AlertCircle, Zap, Play
 } from 'lucide-react';
+import { API_URL } from '@/lib/config';
 
 interface DayPlan {
   day: number;
@@ -58,7 +59,7 @@ export default function PlacementRoadmap() {
   const loadRoadmap = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8000/api/placement/roadmap/${profileId}`);
+      const response = await fetch(`${API_URL}/api/placement/roadmap/${profileId}`);
       if (response.ok) {
         const data = await response.json();
         setRoadmap({ roadmap: data.roadmap, statistics: data as any, daily_dsa_count: 0 });
@@ -74,7 +75,7 @@ export default function PlacementRoadmap() {
     setGenerating(true);
     try {
       const response = await fetch(
-        `http://localhost:8000/api/placement/generate-roadmap/${profileId}`,
+        `${API_URL}/api/placement/generate-roadmap/${profileId}`,
         { method: 'POST' }
       );
       const data = await response.json();

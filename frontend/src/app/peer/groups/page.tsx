@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { UsersRound, Users, Target, ArrowRight, Check } from 'lucide-react';
+import { API_URL } from '@/lib/config';
 
 interface Group {
   id: number;
@@ -22,7 +23,7 @@ export default function StudyGroups() {
 
   const loadGroups = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/peer/groups');
+      const response = await fetch(`${API_URL}/api/peer/groups`);
       const data = await response.json();
       setGroups(data.groups);
     } catch (error) {
@@ -32,7 +33,7 @@ export default function StudyGroups() {
 
   const handleJoinGroup = async (groupId: number) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/peer/groups/${groupId}/join`, {
+      const response = await fetch(`${API_URL}/api/peer/groups/${groupId}/join`, {
         method: 'POST'
       });
       const data = await response.json();

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Code, Clock, Users, Play, Calendar, Trophy, Timer } from 'lucide-react';
+import { API_URL } from '@/lib/config';
 
 interface Session {
   id: number;
@@ -47,7 +48,7 @@ const [error, setError] = useState(false);
 
 const loadSessions = async () => {
   try {
-    const response = await fetch('http://localhost:8000/api/peer/sessions');
+    const response = await fetch(`${API_URL}/api/peer/sessions`);
     if (response.ok) {
       const data = await response.json();
       setSessions(data.sessions || []);

@@ -17,6 +17,7 @@ import {
   ArrowRight,
   Map,
 } from 'lucide-react';
+import { API_URL } from '@/lib/config';
 
 interface CompanyQuestions {
   company: string;
@@ -67,7 +68,7 @@ export default function PlacementDashboard() {
   const checkRoadmap = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/placement/roadmap/${profileId}`
+        `${API_URL}/api/placement/roadmap/${profileId}`
       );
       setHasRoadmap(response.ok);
     } catch (error) {
@@ -79,14 +80,14 @@ export default function PlacementDashboard() {
     try {
       // Load profile
       const profileRes = await fetch(
-        `http://localhost:8000/api/placement/profile/${profileId}`
+        `${API_URL}/api/placement/profile/${profileId}`
       );
       const profileData = await profileRes.json();
       setProfile(profileData);
 
       // Load company questions
       const questionsRes = await fetch(
-        `http://localhost:8000/api/placement/company-questions/${profileData.company_name}?role=${profileData.role}`
+        `${API_URL}/api/placement/company-questions/${profileData.company_name}?role=${profileData.role}`
       );
       const questionsData = await questionsRes.json();
       setQuestions(questionsData);
@@ -100,7 +101,7 @@ export default function PlacementDashboard() {
   const handleGenerateRoadmap = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/placement/generate-roadmap/${profileId}`,
+        `${API_URL}/api/placement/generate-roadmap/${profileId}`,
         { method: 'POST' }
       );
 

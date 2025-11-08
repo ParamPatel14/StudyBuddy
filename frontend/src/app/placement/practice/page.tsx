@@ -6,6 +6,7 @@ import {
   Code, Clock, CheckCircle, XCircle, TrendingUp, 
   Target, Calendar, BarChart3, Play, Save
 } from 'lucide-react';
+import { API_URL } from '@/lib/config';
 
 interface TopicAnalytics {
   topic: string;
@@ -46,14 +47,14 @@ export default function PlacementPractice() {
     try {
       // Load analytics
       const analyticsRes = await fetch(
-        `http://localhost:8000/api/placement/practice/analytics/${profileId}`
+        `${API_URL}/api/placement/practice/analytics/${profileId}`
       );
       const analyticsData = await analyticsRes.json();
       setAnalytics(analyticsData.topics);
 
       // Load daily progress
       const dailyRes = await fetch(
-        `http://localhost:8000/api/placement/practice/daily/${profileId}`
+        `${API_URL}/api/placement/practice/daily/${profileId}`
       );
       const dailyData = await dailyRes.json();
       setDailyProgress(dailyData);
@@ -74,7 +75,7 @@ export default function PlacementPractice() {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/placement/practice/record?profile_id=${profileId}`,
+        `${API_URL}/api/placement/practice/record?profile_id=${profileId}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

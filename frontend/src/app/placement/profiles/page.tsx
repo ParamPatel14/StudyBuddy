@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Building2, Calendar, Target, ArrowRight, Plus } from 'lucide-react';
+import { API_URL } from '@/lib/config';
 
 interface Profile {
   id: number;
@@ -25,7 +26,7 @@ export default function PlacementProfiles() {
 
   const loadProfiles = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/placement/profiles');
+      const response = await fetch(`${API_URL}/api/placement/profiles`);
       const data = await response.json();
       setProfiles(data.profiles);
     } catch (error) {

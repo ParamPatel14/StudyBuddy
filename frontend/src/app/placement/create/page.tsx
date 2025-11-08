@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Briefcase, Calendar, Clock, Plus, Trash2, ArrowRight, Building2 } from 'lucide-react';
+import { API_URL } from '@/lib/config';
 
 const ROUND_TYPES = [
   { value: 'aptitude', label: '📊 Aptitude Test', duration: 60 },
@@ -77,7 +78,7 @@ export default function CreatePlacementProfile() {
   setLoading(true);
 
   try {
-    const response = await fetch('http://localhost:8000/api/placement/profile', {
+    const response = await fetch(`${API_URL}/api/placement/profile`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

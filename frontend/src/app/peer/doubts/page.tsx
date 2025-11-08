@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { MessageCircle, ThumbsUp, CheckCircle, Plus, Search } from 'lucide-react';
+import { API_URL } from '@/lib/config';
 
 interface Doubt {
   id: number;
@@ -25,7 +26,7 @@ export default function DoubtThreads() {
 
   const loadDoubts = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/peer/doubts');
+      const response = await fetch(`${API_URL}/api/peer/doubts`);
       const data = await response.json();
       setDoubts(data.doubts);
     } catch (error) {

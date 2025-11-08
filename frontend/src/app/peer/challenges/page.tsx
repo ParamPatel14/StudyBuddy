@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Trophy, Clock, Users, Zap, Medal, Crown } from 'lucide-react';
+import { API_URL } from '@/lib/config';
 
 interface Challenge {
   id: number;
@@ -30,7 +31,7 @@ export default function RevisionChallenges() {
 
   const loadChallenges = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/peer/challenges');
+      const response = await fetch(`${API_URL}/api/peer/challenges`);
       const data = await response.json();
       setChallenges(data.challenges);
     } catch (error) {
@@ -40,7 +41,7 @@ export default function RevisionChallenges() {
 
   const loadLeaderboard = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/peer/challenges/1/leaderboard');
+      const response = await fetch(`${API_URL}/api/peer/challenges/1/leaderboard`);
       const data = await response.json();
       setLeaderboard(data.leaderboard);
     } catch (error) {
