@@ -192,3 +192,90 @@ async def get_available_companies():
         "count": len(companies),
         "note": "Other companies use AI-generated patterns"
     }
+
+
+from app.services.roadmap_generator import RoadmapGenerator
+from datetime import datetime
+
+roadmap_generator = RoadmapGenerator()
+
+@router.post("/generate-roadmap/{profile_id}")
+async def generate_roadmap(
+    profile_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Generate personalized day-by-day roadmap for placement prep
+    """
+    try:
+        # Get profile
+        profile = db.query(PlacementProfile).filter(PlacementProfile.id == profile_id).first()
+        if not profile:
+            raise HTTPException(status_code=404, detail="Profile not found")
+        
+        # Get company questions
+        company_questions = company_questions_service.get_company_questions(
+            profile.company_name,
+            profile.role
+        )
+        
+        # Generate roadmap
+        roadmap_data = roadmap_generator.generate_roadmap(
+            company_questions=company_questions,
+            interview_date=profile.interview_date,
+            hours_per_day=profile.hours_per_day,
+            round_structure=profile.round_structure
+        )
+        
+        # Save to database
+        existing_plan = db.query(PlacementPlan).filter(
+            PlacementPlan.profile_id == profile_id
+        ).first()
+        
+        if existing_plan:
+            existing_plan.plan_json = roadmap_data['roadmap']
+            existing_plan.total_days = roadmap_data['statistics']['total_days']
+            existing_plan.total_hours = roadmap_data['statistics']['total_hours']
+            existing_plan.total_tasks = roadmap_data['statistics']['total_questions']
+        else:
+            plan = PlacementPlan(
+                profile_id=profile_id,
+                plan_json=roadmap_data['roadmap'],
+                total_days=roadmap_data['statistics']['total_days'],
+                total_hours=roadmap_data['statistics']['total_hours'],
+                total_tasks=roadmap_data['statistics']['total_questions']
+            )
+            db.add(plan)
+        
+        db.commit()
+        
+        return {
+            "roadmap": roadmap_data['roadmap'],
+            "statistics": roadmap_data['statistics'],
+            "daily_dsa_count": roadmap_data['daily_dsa_count']
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/roadmap/{profile_id}")
+async def get_roadmap(
+    profile_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get existing roadmap"""
+    
+    plan = db.query(PlacementPlan).filter(PlacementPlan.profile_id == profile_id).first()
+    if not plan:
+        raise HTTPException(status_code=404, detail="Roadmap not found. Generate it first.")
+    
+    return {
+        "roadmap": plan.plan_json,
+        "total_days": plan.total_days,
+        "total_hours": plan.total_hours,
+        "progress": plan.progress_percentage
+    }

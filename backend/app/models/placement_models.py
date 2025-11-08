@@ -52,23 +52,19 @@ class PlacementProfile(Base):
     preparation_plan = relationship("PlacementPlan", back_populates="profile", uselist=False)
 
 class PlacementPlan(Base):
-    """Generated preparation plan"""
     __tablename__ = "placement_plans"
     
     id = Column(Integer, primary_key=True, index=True)
     profile_id = Column(Integer, ForeignKey("placement_profiles.id"), unique=True)
     
-    # Generated Plan
-    plan_json = Column(JSON)  # Day-by-day breakdown
+    plan_json = Column(JSON)
     total_days = Column(Integer)
     total_hours = Column(Float)
+    total_tasks = Column(Integer, default=0)  # Add this
     
-    # Progress
     completed_tasks = Column(Integer, default=0)
-    total_tasks = Column(Integer, default=0)
+    total_topics = Column(Integer, default=0)
     progress_percentage = Column(Float, default=0.0)
     
-    # Relationships
     profile = relationship("PlacementProfile", back_populates="preparation_plan")
-    
     created_at = Column(DateTime, default=datetime.utcnow)

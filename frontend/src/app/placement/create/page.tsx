@@ -67,45 +67,46 @@ export default function CreatePlacementProfile() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
+  
+  if (!companyName || !role || !interviewDate || rounds.length === 0) {
+    alert('Please fill all required fields');
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const response = await fetch('http://localhost:8000/api/placement/profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        company_name: companyName,
+        role: role,
+        interview_date: interviewDate,
+        hours_per_day: hoursPerDay,
+        round_structure: rounds
+      })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Failed to create profile');
+    }
+
+    const data = await response.json();
+    console.log('✅ Profile created:', data);
+
+    // SUCCESS - REDIRECT TO DASHBOARD
+    router.push(`/placement/dashboard?profileId=${data.id}`);
     
-    if (!companyName || !role || !interviewDate || rounds.length === 0) {
-      alert('Please fill all required fields');
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const response = await fetch('http://localhost:8000/api/placement/profile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          company_name: companyName,
-          role: role,
-          interview_date: interviewDate,
-          hours_per_day: hoursPerDay,
-          round_structure: rounds
-        })
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || 'Failed to create profile');
-      }
-
-      const data = await response.json();
-      console.log('✅ Profile created:', data);
-
-      alert(`Placement profile created successfully! You have ${data.days_remaining} days to prepare.`);
-      router.push(`/placement/dashboard?profileId=${data.id}`);
-    } catch (error: any) {
-      console.error('❌ Error:', error);
-      alert(error.message || 'Failed to create placement profile');
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (error: any) {
+    console.error('❌ Error:', error);
+    alert(error.message || 'Failed to create placement profile');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const calculateDaysRemaining = () => {
     if (!interviewDate) return 0;

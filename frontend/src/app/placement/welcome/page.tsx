@@ -68,6 +68,32 @@ export default function PlacementWelcome() {
           </p>
         </div>
       </div>
+
+        <div className="text-center">
+        <button
+            onClick={() => router.push('/placement/create')}
+            className="px-8 py-4 bg-linear-to-r from-green-600 to-teal-600 text-white rounded-xl font-bold text-lg hover:from-green-700 hover:to-teal-700 transition shadow-lg inline-flex items-center"
+        >
+            Create Your Preparation Plan
+            <ArrowRight className="w-5 h-5 ml-2" />
+        </button>
+        
+        <p className="text-sm text-gray-600 mt-4">
+            Takes only 2 minutes to set up
+        </p>
+        
+        {/* ADD THIS */}
+        <div className="mt-6">
+            <button
+            onClick={() => router.push('/placement/profiles')}
+            className="text-green-600 hover:text-green-700 font-semibold"
+            >
+            View Existing Profiles →
+            </button>
+        </div>
+        </div>
+
     </div>
+    
   );
 }
