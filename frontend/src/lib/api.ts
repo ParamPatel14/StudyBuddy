@@ -134,4 +134,94 @@ export const markSessionComplete = async (sessionId: number) => {
   }
 };
 
+export const generateQuestions = async (topicId: number, difficulty: string, count: number = 10) => {
+  const response = await api.post('/api/practice/generate-questions', {
+    topic_id: topicId,
+    difficulty,
+    question_count: count
+  });
+  return response.data;
+};
+
+export const getQuestions = async (
+  topicId: number, 
+  difficulty: string = 'medium',
+  questionType: string = 'mcq',
+  limit: number = 10
+) => {
+  const response = await api.get('/api/practice/questions/' + topicId, {
+    params: { difficulty, question_type: questionType, limit }
+  });
+  return response.data;
+};
+
+export const getQuestionDetails = async (questionId: number, includeAnswer: boolean = false) => {
+  const response = await api.get(`/api/practice/question/${questionId}/details`, {
+    params: { include_answer: includeAnswer }
+  });
+  return response.data;
+};
+
+export const submitAnswer = async (
+  questionId: number,
+  answer: string,
+  timeTaken: number,
+  confidence: number,
+  userId: number = 1
+) => {
+  const response = await api.post('/api/practice/submit-answer', {
+    question_id: questionId,
+    student_answer: answer,
+    time_taken: timeTaken,
+    confidence_level: confidence
+  }, {
+    params: { user_id: userId }
+  });
+  return response.data;
+};
+
+export const getTopicProgress = async (topicId: number, userId: number = 1) => {
+  const response = await api.get(`/api/practice/progress/${topicId}`, {
+    params: { user_id: userId }
+  });
+  return response.data;
+};
+
+export const getOverallProgress = async (userId: number = 1, planId?: number) => {
+  const response = await api.get(`/api/practice/overall-progress/${userId}`, {
+    params: { plan_id: planId }
+  });
+  return response.data;
+};
+
+export const getWeakTopics = async (userId: number, planId: number, threshold: number = 60) => {
+  const response = await api.get(`/api/practice/weak-topics/${userId}`, {
+    params: { plan_id: planId, threshold }
+  });
+  return response.data;
+};
+
+export const getPracticeStats = async (userId: number = 1, days: number = 7) => {
+  const response = await api.get(`/api/practice/stats/${userId}`, {
+    params: { days }
+  });
+  return response.data;
+};
+
+export const getAttemptHistory = async (userId: number = 1, topicId?: number, limit: number = 20) => {
+  const response = await api.get(`/api/practice/attempt-history/${userId}`, {
+    params: { topic_id: topicId, limit }
+  });
+  return response.data;
+};
+
+export const markTopicForReview = async (topicId: number, userId: number = 1) => {
+  const response = await api.post(`/api/practice/mark-for-review/${topicId}`, null, {
+    params: { user_id: userId }
+  });
+  return response.data;
+};
+
+
+
 export default api;
