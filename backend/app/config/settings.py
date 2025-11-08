@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     GROQ_API_KEY: str | None = None
     LLM_PROVIDER_ORDER: str | None = None
     DEFAULT_LLM_PROVIDER: str | None = None
+    YOUTUBE_API_KEY: str | None = None
     CHATBOT_MAX_HISTORY: int | None = None
     CHATBOT_CONTEXT_LENGTH: int | None = None
     

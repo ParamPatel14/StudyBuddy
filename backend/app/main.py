@@ -7,7 +7,9 @@ from app.models import models
 from app.routes import upload, study_plan, lessons, test_gemini, practice, srs
 from app.routes import upload, study_plan, lessons, test_gemini, practice, srs, exam_day
 from app.routes import upload, study_plan, lessons, test_gemini, practice, srs, exam_day, chatbot
+from app.routes import placement_practice
 from app.routes import placement
+from app.routes import youtube
 import traceback
 
 # Create database tables
@@ -60,6 +62,8 @@ app.include_router(srs.router)
 app.include_router(exam_day.router)
 app.include_router(chatbot.router)  # Phase 3
 app.include_router(placement.router)
+app.include_router(placement_practice.router)
+app.include_router(youtube.router) 
 
 @app.get("/")
 async def root():

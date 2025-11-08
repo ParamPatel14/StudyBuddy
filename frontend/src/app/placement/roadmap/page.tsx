@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import YouTubeModal from '@/components/YouTubeModal';
 import { 
   Calendar, Code, CheckCircle, Clock, Target, 
-  TrendingUp, Users, Layers, AlertCircle, Zap
+  TrendingUp, Users, Layers, AlertCircle, Zap, Play
 } from 'lucide-react';
 
 interface DayPlan {
@@ -41,6 +42,12 @@ export default function PlacementRoadmap() {
   const [roadmap, setRoadmap] = useState<RoadmapData | null>(null);
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
+  
+  // YouTube Modal State
+  const [youtubeModal, setYoutubeModal] = useState({
+    isOpen: false,
+    topic: ''
+  });
 
   useEffect(() => {
     if (profileId) {
@@ -175,7 +182,7 @@ export default function PlacementRoadmap() {
 
         {/* Roadmap Timeline */}
         <div className="space-y-4">
-          {roadmap.roadmap.map((day, index) => (
+          {roadmap.roadmap.map((day) => (
             <div
               key={day.day}
               className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
@@ -205,10 +212,21 @@ export default function PlacementRoadmap() {
 
                 {/* DSA Questions */}
                 <div className="mb-4">
-                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                    <Code className="w-5 h-5 mr-2 text-green-600" />
-                    DSA Practice ({day.question_count} questions)
-                  </h4>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-semibold text-gray-900 flex items-center">
+                      <Code className="w-5 h-5 mr-2 text-green-600" />
+                      DSA Practice ({day.question_count} questions)
+                    </h4>
+                    
+                    {/* YouTube Button */}
+                    <button
+                      onClick={() => setYoutubeModal({ isOpen: true, topic: day.topic })}
+                      className="px-4 py-2 bg-linear-to-r from-red-500 to-pink-500 text-white rounded-lg font-semibold hover:from-red-600 hover:to-pink-600 transition flex items-center text-sm shadow-lg"
+                    >
+                      <Play className="w-4 h-4 mr-2" />
+                      Learn on YouTube
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     {day.dsa_questions.map((question, idx) => (
                       <div key={idx} className="flex items-center bg-gray-50 rounded-lg p-3">
@@ -242,6 +260,13 @@ export default function PlacementRoadmap() {
           ))}
         </div>
       </div>
+
+      {/* YouTube Modal */}
+      <YouTubeModal
+        topic={youtubeModal.topic}
+        isOpen={youtubeModal.isOpen}
+        onClose={() => setYoutubeModal({ isOpen: false, topic: '' })}
+      />
     </div>
   );
 }
