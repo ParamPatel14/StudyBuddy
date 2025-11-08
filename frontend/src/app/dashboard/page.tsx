@@ -1,5 +1,5 @@
 'use client';
-import Chatbot from '@/components/ChatBot';
+import Chatbot from '@/components/Chatbot';
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { getDashboard } from '@/lib/api';
