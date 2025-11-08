@@ -5,7 +5,43 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 30000, // 30 second timeout
 });
+
+// Add response interceptor for better error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      // Server responded with error
+      console.error('API Error Response:', {
+        status: error.response.status,
+        data: error.response.data,
+        url: error.config?.url
+      });
+    } else if (error.request) {
+      // Request made but no response
+      console.error('API No Response:', error.request);
+    } else {
+      // Error setting up request
+      console.error('API Request Error:', error.message);
+    }
+    return Promise.reject(error);
+  }
+);
+
+export const createStudyPlan = async (data: any) => {
+  try {
+    console.log('📤 Creating study plan:', data);
+    const response = await api.post('/api/study-plan/create', data);
+    console.log('✓ Study plan created:', response.data);
+    return response.data;
+  } catch (error: any) {
+    const errorDetail = error.response?.data?.detail || error.message || 'Unknown error';
+    console.error('❌ Create study plan error:', errorDetail);
+    throw new Error(errorDetail);
+  }
+};
 
 export const uploadPDF = async (file: File, fileType: string) => {
   const formData = new FormData();
@@ -58,17 +94,6 @@ export const listExtractedFiles = async () => {
     throw error;
   }
 };
-
-export const createStudyPlan = async (data: any) => {
-  try {
-    const response = await api.post('/api/study-plan/create', data);
-    return response.data;
-  } catch (error: any) {
-    console.error('Create study plan error:', error.response?.data || error.message);
-    throw error;
-  }
-};
-
 export const generatePlan = async (planId: number, topics: any[]) => {
   try {
     const response = await api.post(`/api/study-plan/${planId}/generate-plan`, { topics });
