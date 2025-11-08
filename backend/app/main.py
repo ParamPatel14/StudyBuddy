@@ -2,19 +2,12 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.config.database import engine, Base
-from app.routes import upload, study_plan, lessons, test_gemini
+from app.routes import upload, study_plan, lessons, test_gemini, practice  # Add practice
 from app.models import models
 import traceback
-import sys
 
 # Create database tables
-print("Creating database tables...")
-try:
-    Base.metadata.create_all(bind=engine)
-    print("✓ Database tables created successfully")
-except Exception as e:
-    print(f"❌ Error creating database tables: {e}")
-    sys.exit(1)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Smart Exam Prep API",
@@ -22,14 +15,13 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Enhanced exception handler
+# Exception handler
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     error_trace = traceback.format_exc()
     print(f"\n{'='*60}")
     print(f"❌ UNHANDLED EXCEPTION")
     print(f"Path: {request.method} {request.url.path}")
-    print(f"Error Type: {type(exc).__name__}")
     print(f"Error: {str(exc)}")
     print(f"Traceback:")
     print(error_trace)
@@ -37,11 +29,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     
     return JSONResponse(
         status_code=500,
-        content={
-            "detail": str(exc),
-            "error_type": type(exc).__name__,
-            "path": str(request.url.path)
-        },
+        content={"detail": str(exc), "path": str(request.url.path)},
         headers={
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "*",
@@ -49,14 +37,13 @@ async def global_exception_handler(request: Request, exc: Exception):
         }
     )
 
-# CORS middleware - MUST be added BEFORE routes
+# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"]
 )
 
 # Include routers
@@ -64,15 +51,16 @@ app.include_router(upload.router)
 app.include_router(study_plan.router)
 app.include_router(lessons.router)
 app.include_router(test_gemini.router)
+app.include_router(practice.router)  # Add this line
 
 @app.get("/")
 async def root():
     return {
-        "message": "Smart Exam Prep API powered by Gemini 2.5 Pro",
-        "version": "1.0.0",
-        "ai_model": "gemini-2.5-pro-preview-03-25",
-        "status": "running"
+        "message": "Smart Exam Prep API - Phase 2",
+        "version": "2.0.0",
+        "features": ["Questions", "Practice", "Evaluation"]
     }
+
 
 @app.get("/health")
 async def health_check():
